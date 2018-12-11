@@ -18,10 +18,21 @@
 
 #pragma once
 
+#if defined _WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <windows.h>
+#else
+#include	<sys/types.h>	/* basic system data types */
+#include	<sys/socket.h>	/* basic socket definitions */
+#include	<errno.h>
+#include	<netinet/in.h>	/* sockaddr_in{} and other Internet defns */
+#include	<netdb.h>
+#endif
+
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 void err_sys(const char* c)
 {

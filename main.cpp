@@ -21,11 +21,13 @@ void dg_echo(int sockfd, SA *pcliaddr, socklen_t clilen)
 
 int main(int argc, char **argv)
 {
+#if defined _WIN32
     WSADATA wsaData;
 
     int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
     if (result != NO_ERROR)
         printf("Initialization error.\n");
+#endif
 
     int sockfd;
     struct sockaddr_in servaddr, cliaddr;
@@ -41,5 +43,7 @@ int main(int argc, char **argv)
 
     dg_echo(sockfd, (SA *)&cliaddr, sizeof(cliaddr));
 
+#if defined _WIN32
     WSACleanup();
+#endif
 }

@@ -11,4 +11,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_executable(server main.cpp wrapsock.h)
 
 # Add link libraries
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
 target_link_libraries(server LINK_PRIVATE Ws2_32)
+endif()
