@@ -1,9 +1,9 @@
 #include "wrapsock.h"
 
 #define	bzero(ptr,n) memset(ptr, 0, n)
-#define	SERV_PORT 9877 /* TCP and UDP */
+constexpr auto SERV_PORT = 9877 /* TCP and UDP */;
 #define	SA struct sockaddr
-#define	MAXLINE 4096 /* max text line length */
+constexpr auto MAXLINE = 4096 /* max text line length */;
 
 void dg_echo(int sockfd, SA *pcliaddr, socklen_t clilen)
 {
@@ -14,7 +14,8 @@ void dg_echo(int sockfd, SA *pcliaddr, socklen_t clilen)
     for (; ; ) {
         len = clilen;
         n = Recvfrom(sockfd, mesg, MAXLINE, 0, pcliaddr, &len);
-
+        mesg[n] = '\0';
+        printf("mesg: %s", mesg);
         Sendto(sockfd, mesg, n, 0, pcliaddr, len);
     }
 }
