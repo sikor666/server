@@ -19,9 +19,7 @@
 #pragma once
 
 #if defined _WIN32
-#include <winsock2.h>
 #include <ws2tcpip.h>
-#include <windows.h>
 #else
 #include	<sys/types.h>	/* basic system data types */
 #include	<sys/socket.h>	/* basic socket definitions */
