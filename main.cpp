@@ -10,7 +10,7 @@ constexpr auto SERV_PORT = 9877 /* TCP and UDP */;
 #define	SA struct sockaddr
 constexpr auto MAXLINE = 4096 /* max text line length */;
 
-std::string players;
+std::map<std::string, std::string> players;
 std::string ball;
 std::string blocks;
 
@@ -20,7 +20,8 @@ void dg_echo(int sockfd, SA *pcliaddr, socklen_t clilen)
     socklen_t len;
     char mesg[MAXLINE];
 
-    for (; ; ) {
+    while (true)
+    {
         len = clilen;
         n = Recvfrom(sockfd, mesg, MAXLINE, 0, pcliaddr, &len);
         mesg[n] = '\0';
@@ -33,13 +34,18 @@ void dg_echo(int sockfd, SA *pcliaddr, socklen_t clilen)
 
         std::string message;
 
-        if (line == "SET")
+        if (line == "SET_PLAYER")
         {
-            line = stream.str();
-            auto found = line.find("|");
-            if (found != std::string::npos)
+            while (std::getline(stream, line, '|'))
             {
-                players = line.substr(found + 1);
+                auto found = line.find("$");
+                if (found != std::string::npos)
+                {
+                    std::string index = line.substr(0, found);
+                    std::string left = line.substr(found + 1);
+
+                    players[index] = left;
+                }
             }
 
             //message = "SET:OK";
@@ -68,9 +74,12 @@ void dg_echo(int sockfd, SA *pcliaddr, socklen_t clilen)
 
             //message = "BLOCKS:OK";
         }
-        else if (line == "GET")
+        else if (line == "GET_PLAYERS")
         {
-            message = players;
+            for (auto player : players)
+            {
+                message += player.first + "$" + player.second + "|";
+            }
         }
         else if (line == "GET_BLOCKS")
         {
