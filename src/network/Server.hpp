@@ -1,5 +1,7 @@
 #pragma once
 
+#include "udp/Socket.hpp"
+
 #include "wrapsock.h"
 
 #include <array>
@@ -11,8 +13,8 @@
 #define	bzero(ptr,n) memset(ptr, 0, n)
 #define	SA struct sockaddr
 
-constexpr auto SERV_PORT = 9877 /* TCP and UDP */;
-constexpr auto MAXLINE = 4096 /* max text line length */;
+constexpr auto SERV_PORT = 9877;
+constexpr auto MAXLINE = 4096;
 constexpr auto MAXCLIENTS = 4;
 
 std::array<std::string, MAXCLIENTS> clients;
@@ -166,11 +168,15 @@ public:
     Server()
     {
 #if defined _WIN32
+        // Initialize Winsock
         WSADATA wsaData;
 
-        int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
-        if (result != NO_ERROR)
-            printf("Initialization error.\n");
+        int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+        if (iResult != 0)
+        {
+            printf("WSAStartup failed: %d\n", iResult);
+            exit(1);
+        }
 #endif
 
         sockfd = Socket(AF_INET, SOCK_DGRAM, 0);
@@ -198,4 +204,6 @@ public:
 private:
     int sockfd;
     struct sockaddr_in servaddr, cliaddr;
+
+    UDP::Socket socket;
 };

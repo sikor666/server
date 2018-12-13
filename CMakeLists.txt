@@ -9,9 +9,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Add include directories
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/network)
 
 # Add the executable
-add_executable(server main.cpp src/Server.hpp src/wrapsock.h)
+add_executable(server main.cpp src/network/Server.hpp src/network/udp/Socket.hpp src/wrapsock.h)
 
 # Add link libraries
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")
