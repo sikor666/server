@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(server)
+project(atende)
 
 # Setup C++ standard
 set(CMAKE_CXX_STANDARD 14)
