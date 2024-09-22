@@ -8,12 +8,12 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 
+#include <boost/asio/ts/buffer.hpp>
+#include <boost/asio/ts/internet.hpp>
 #include <cstdlib>
 #include <iostream>
 #include <thread>
 #include <utility>
-#include <boost/asio/ts/buffer.hpp>
-#include <boost/asio/ts/internet.hpp>
 
 using boost::asio::ip::tcp;
 
@@ -21,57 +21,57 @@ const int max_length = 1024;
 
 void session(tcp::socket sock)
 {
-  try
-  {
+    try
+    {
+        for (;;)
+        {
+            char data[max_length];
+
+            boost::system::error_code error;
+            size_t length = sock.read_some(boost::asio::buffer(data), error);
+            if (error == boost::asio::stream_errc::eof)
+                break; // Connection closed cleanly by peer.
+            else if (error)
+                throw boost::system::system_error(error); // Some other error.
+
+            boost::asio::write(sock, boost::asio::buffer(data, length));
+        }
+    }
+    catch (std::exception & e)
+    {
+        std::cerr << "Exception in thread: " << e.what() << "\n";
+    }
+}
+
+void server(boost::asio::io_context & io_context, unsigned short port)
+{
+    tcp::acceptor a(io_context, tcp::endpoint(tcp::v4(), port));
     for (;;)
     {
-      char data[max_length];
-
-      boost::system::error_code error;
-      size_t length = sock.read_some(boost::asio::buffer(data), error);
-      if (error == boost::asio::stream_errc::eof)
-        break; // Connection closed cleanly by peer.
-      else if (error)
-        throw boost::system::system_error(error); // Some other error.
-
-      boost::asio::write(sock, boost::asio::buffer(data, length));
+        tcp::socket sock(io_context);
+        a.accept(sock);
+        std::thread(session, std::move(sock)).detach();
     }
-  }
-  catch (std::exception& e)
-  {
-    std::cerr << "Exception in thread: " << e.what() << "\n";
-  }
 }
 
-void server(boost::asio::io_context& io_context, unsigned short port)
+int main(int argc, char * argv[])
 {
-  tcp::acceptor a(io_context, tcp::endpoint(tcp::v4(), port));
-  for (;;)
-  {
-    tcp::socket sock(io_context);
-    a.accept(sock);
-    std::thread(session, std::move(sock)).detach();
-  }
-}
-
-int main(int argc, char* argv[])
-{
-  try
-  {
-    if (argc != 2)
+    try
     {
-      std::cerr << "Usage: blocking_tcp_echo_server <port>\n";
-      return 1;
+        if (argc != 2)
+        {
+            std::cerr << "Usage: blocking_tcp_echo_server <port>\n";
+            return 1;
+        }
+
+        boost::asio::io_context io_context;
+
+        server(io_context, std::atoi(argv[1]));
+    }
+    catch (std::exception & e)
+    {
+        std::cerr << "Exception: " << e.what() << "\n";
     }
 
-    boost::asio::io_context io_context;
-
-    server(io_context, std::atoi(argv[1]));
-  }
-  catch (std::exception& e)
-  {
-    std::cerr << "Exception: " << e.what() << "\n";
-  }
-
-  return 0;
+    return 0;
 }
