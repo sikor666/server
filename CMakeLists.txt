@@ -13,7 +13,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/core)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/network)
 
 # Add executable
-add_executable(async_tcp_echo_server src/main.cpp
+add_executable(blocking_tcp_echo_server src/blocking_tcp_echo_server.cpp)
+add_executable(async_tcp_echo_server src/async_tcp_echo_server.cpp
     src/network/Server.cpp
     src/network/Session.cpp
 

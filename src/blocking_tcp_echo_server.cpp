@@ -1,19 +1,10 @@
-//
-// blocking_tcp_echo_server.cpp
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//
-// Copyright (c) 2003-2024 Christopher M. Kohlhoff (chris at kohlhoff dot com)
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-//
-
-#include <boost/asio/ts/buffer.hpp>
-#include <boost/asio/ts/internet.hpp>
 #include <cstdlib>
 #include <iostream>
 #include <thread>
 #include <utility>
+
+#include <boost/asio/ts/buffer.hpp>
+#include <boost/asio/ts/internet.hpp>
 
 using boost::asio::ip::tcp;
 
@@ -34,6 +25,7 @@ void session(tcp::socket sock)
             else if (error)
                 throw boost::system::system_error(error); // Some other error.
 
+            std::cout << "[" << std::this_thread::get_id() << "] " << std::string{data, length};
             boost::asio::write(sock, boost::asio::buffer(data, length));
         }
     }
@@ -41,6 +33,8 @@ void session(tcp::socket sock)
     {
         std::cerr << "Exception in thread: " << e.what() << "\n";
     }
+
+    std::cout << "[" << std::this_thread::get_id() << "] Connection closed cleanly by peer\n";
 }
 
 void server(boost::asio::io_context & io_context, unsigned short port)
