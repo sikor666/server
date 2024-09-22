@@ -35,6 +35,7 @@ private:
             boost::asio::buffer(data_, max_length), [this, self](boost::system::error_code ec, std::size_t length) {
                 if (!ec)
                 {
+                    std::cout << std::string{data_, length};
                     do_write(length);
                 }
             });
@@ -93,7 +94,7 @@ int main(int argc, char * argv[])
     {
         if (argc != 2)
         {
-            std::cerr << "Usage: async_tcp_echo_server <port>\n";
+            std::cerr << "Usage: " << argv[0] << " <port>\n";
             return 1;
         }
 
