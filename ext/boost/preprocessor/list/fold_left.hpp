@@ -338,7 +338,7 @@
 # define BOOST_PP_LIST_FOLD_LEFT_2ND_D BOOST_PP_LIST_FOLD_LEFT_D
 #
 # if BOOST_PP_CONFIG_FLAGS() & BOOST_PP_CONFIG_EDG()
-#    include <boost/preprocessor/list/detail/edg/fold_left.hpp>
+// FIXME: #    include <boost/preprocessor/list/detail/edg/fold_left.hpp>
 # elif BOOST_PP_CONFIG_FLAGS() & BOOST_PP_CONFIG_DMC()
 #    include <boost/preprocessor/list/detail/dmc/fold_left.hpp>
 # else

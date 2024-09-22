@@ -352,7 +352,7 @@
 # define BOOST_PP_WHILE_F(d, _) 0
 #
 # if BOOST_PP_CONFIG_FLAGS() & BOOST_PP_CONFIG_EDG()
-#    include <boost/preprocessor/control/detail/edg/while.hpp>
+// FIXME: #    include <boost/preprocessor/control/detail/edg/while.hpp>
 # elif BOOST_PP_CONFIG_FLAGS() & BOOST_PP_CONFIG_MSVC()
 #    include <boost/preprocessor/control/detail/msvc/while.hpp>
 # elif BOOST_PP_CONFIG_FLAGS() & BOOST_PP_CONFIG_DMC()

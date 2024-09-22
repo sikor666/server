@@ -74,7 +74,7 @@
 # define BOOST_PP_LIST_FOLD_RIGHT_2ND_D BOOST_PP_LIST_FOLD_RIGHT_D
 #
 # if BOOST_PP_CONFIG_FLAGS() & BOOST_PP_CONFIG_EDG()
-#    include <boost/preprocessor/list/detail/edg/fold_right.hpp>
+// FIXME: #    include <boost/preprocessor/list/detail/edg/fold_right.hpp>
 # else
 #    include <boost/preprocessor/list/detail/fold_right.hpp>
 # endif
