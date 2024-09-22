@@ -11,4 +11,4 @@ set(CMAKE_CXX_EXTENSIONS ON)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ext)
 
 # Add executable
-add_executable(server main.cpp)
+add_executable(async_tcp_echo_server async_tcp_echo_server.cpp)
