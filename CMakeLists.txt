@@ -10,13 +10,13 @@ set(CMAKE_CXX_EXTENSIONS ON)
 # Setup include directories
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ext)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/core)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/network)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/network/async)
 
 # Add executable
 add_executable(blocking_tcp_echo_server src/blocking_tcp_echo_server.cpp)
 add_executable(async_tcp_echo_server src/async_tcp_echo_server.cpp
-    src/network/Server.cpp
-    src/network/Session.cpp
+    src/network/async/Server.cpp
+    src/network/async/Session.cpp
 
     src/core/ExecutionFactory.cpp
     src/core/ExecutionPool.cpp
