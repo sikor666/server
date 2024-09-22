@@ -10,6 +10,7 @@ class IExecutionPool;
 } // namespace core
 
 namespace network {
+namespace async {
 class Session;
 class Server
 {
@@ -23,6 +24,7 @@ private:
     boost::asio::ip::tcp::socket socket_;
 
     std::shared_ptr<core::IExecutionPool> m_executionPool;
-    std::unique_ptr<core::IExecutionQueue<void(std::shared_ptr<network::Session>)>> m_executionQueue;
+    std::unique_ptr<core::IExecutionQueue<void(std::shared_ptr<Session>)>> m_executionQueue;
 };
+} // namespace async
 } // namespace network

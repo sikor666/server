@@ -14,7 +14,7 @@ int main(int argc, char * argv[])
 
         boost::asio::io_context io_context;
 
-        network::Server s(io_context, std::atoi(argv[1]));
+        network::async::Server s(io_context, std::atoi(argv[1]));
 
         io_context.run();
     }

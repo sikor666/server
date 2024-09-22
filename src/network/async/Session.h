@@ -5,6 +5,7 @@
 #include <memory>
 
 namespace network {
+namespace async {
 class Session : public std::enable_shared_from_this<Session>
 {
 public:
@@ -24,4 +25,5 @@ private:
     };
     char data_[max_length];
 };
+} // namespace async
 } // namespace network

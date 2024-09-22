@@ -5,6 +5,7 @@
 #include <iostream>
 
 namespace network {
+namespace async {
 Session::Session(boost::asio::ip::tcp::socket socket)
     : socket_(std::move(socket))
 {
@@ -39,4 +40,5 @@ void Session::do_write(std::size_t length)
             }
         });
 }
+} // namespace async
 } // namespace network
