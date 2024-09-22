@@ -34,10 +34,9 @@ private:
     void execute(T && object, std::promise<void> & promise, const std::atomic_bool & canceled);
     template <typename Y> void execute(T && object, std::promise<Y> & promise, const std::atomic_bool & canceled);
 
-    void pushObject(std::unique_ptr<QueuedObject<R, T>> object, bool & alreadyHasTask);
+    void pushObject(std::unique_ptr<QueuedObject<R, T>> object);
     std::unique_ptr<QueuedObject<R, T>> popObject();
 
-    void notifyWorkers();
     bool hasTask();
     void waitAllTasks();
 
@@ -53,8 +52,6 @@ private:
 
     const std::shared_ptr<IExecutionPool> m_executionPool;
     const std::function<R(const std::atomic_bool & isCanceled, T && object)> m_executor;
-
-    const std::unique_ptr<IThreadWorker> m_additionalWorker;
 };
 } // namespace core
 
@@ -64,7 +61,6 @@ core::ExecutionQueue<R, T>::ExecutionQueue(std::shared_ptr<IExecutionPool> execu
     std::function<R(const std::atomic_bool & shouldQuit, T && object)> executor)
     : m_executionPool(executionPool)
     , m_executor(std::move(executor))
-    , m_additionalWorker(workerFactory.createWorker(*this))
 {
     if (m_executionPool)
     {
@@ -94,9 +90,11 @@ template <typename R, typename T> std::future<R> core::ExecutionQueue<R, T>::pus
     std::unique_ptr<QueuedObject> queuedObject(
         new QueuedObject{std::move(object), std::move(promise), m_cancelTokenProvider.token()});
 
-    bool alreadyHasTask = false;
-    pushObject(std::move(queuedObject), alreadyHasTask);
-    notifyWorkers();
+    pushObject(std::move(queuedObject));
+    if (m_executionPool)
+    {
+        m_executionPool->notifyOneWorker();
+    }
 
     return future;
 }
@@ -177,12 +175,10 @@ void core::ExecutionQueue<R, T>::execute(T && object, std::promise<Y> & promise,
     }
 }
 
-template <typename R, typename T>
-void core::ExecutionQueue<R, T>::pushObject(std::unique_ptr<QueuedObject<R, T>> object, bool & alreadyHasTask)
+template <typename R, typename T> void core::ExecutionQueue<R, T>::pushObject(std::unique_ptr<QueuedObject<R, T>> object)
 {
     std::lock_guard<std::mutex> lock(m_taskQueueMutex);
 
-    alreadyHasTask = m_hasTask;
     m_hasTask = true;
     m_taskQueue.push(std::move(object));
 }
@@ -211,14 +207,6 @@ template <typename R, typename T> bool core::ExecutionQueue<R, T>::hasTask()
     }
 
     return true;
-}
-
-template <typename R, typename T> void core::ExecutionQueue<R, T>::notifyWorkers()
-{
-    if (not m_executionPool or not m_executionPool->notifyOneWorker())
-    {
-        m_additionalWorker->notifyWorker();
-    }
 }
 
 template <typename R, typename T> void core::ExecutionQueue<R, T>::waitAllTasks()

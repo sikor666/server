@@ -88,11 +88,11 @@ void core::ThreadWorker::threadMain()
             break;
         }
 
-        m_checkNextTask = false;
         Task task = m_provider.nextTask();
         if (task.valid())
         {
             task();
+            m_checkNextTask = false;
             continue;
         }
 

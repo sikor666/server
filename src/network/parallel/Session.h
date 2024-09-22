@@ -10,6 +10,8 @@ public:
     Session(boost::asio::ip::tcp::socket socket);
     ~Session();
 
+    void operator()();
+
 private:
     boost::asio::ip::tcp::socket m_socket;
 };

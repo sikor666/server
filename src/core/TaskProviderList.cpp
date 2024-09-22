@@ -1,5 +1,6 @@
-#include <algorithm>
 #include "TaskProviderList.h"
+
+#include <algorithm>
 
 namespace core {
 Task TaskProviderList::nextTask()
