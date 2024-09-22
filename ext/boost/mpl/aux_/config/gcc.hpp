@@ -14,10 +14,11 @@
 // $Date$
 // $Revision$
 
-#if defined(__GNUC__) && !defined(__EDG_VERSION__)
+// FIXME: #
+// #if defined(__GNUC__) && !defined(__EDG_VERSION__)
 #   define BOOST_MPL_CFG_GCC ((__GNUC__ << 8) | __GNUC_MINOR__)
-#else
-#   define BOOST_MPL_CFG_GCC 0
-#endif
+// #else
+// #   define BOOST_MPL_CFG_GCC 0
+// #endif
 
 #endif // BOOST_MPL_AUX_CONFIG_GCC_HPP_INCLUDED
