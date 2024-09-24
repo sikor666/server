@@ -23,6 +23,8 @@ add_executable(blocking_tcp_echo_server src/blocking_tcp_echo_server.cpp
     src/core/ThreadWorker.cpp
     src/core/CancelTokenProvider.cpp)
 
+add_executable(blocking_tcp_echo_client src/blocking_tcp_echo_client.cpp)
+
 add_executable(async_tcp_echo_server src/async_tcp_echo_server.cpp
     src/network/async/Server.cpp
     src/network/async/Session.cpp
