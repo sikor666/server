@@ -1,4 +1,6 @@
 #include <boost/asio/connect.hpp>
+#include "parallel/Client.h"
+
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/ts/buffer.hpp>
 
@@ -12,6 +14,9 @@ int main(int argc, char * argv[])
 {
     try
     {
+        std::cout << "Command: " << sizeof(Command) << "\n";
+        std::cout << "End: " << sizeof(End) << "\n";
+
         if (argc != 3)
         {
             std::cerr << "Usage: " << argv[0] << " <host> <port>\n";
