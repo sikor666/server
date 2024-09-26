@@ -7,7 +7,7 @@ public:
     explicit ThreadWorker(ITaskProvider & provider);
     virtual ~ThreadWorker();
 
-    virtual bool notifyWorker() final;
+    virtual bool notify() final;
 
 private:
     void threadMain();
@@ -53,7 +53,7 @@ core::ThreadWorker::~ThreadWorker()
     }
 }
 
-bool core::ThreadWorker::notifyWorker()
+bool core::ThreadWorker::notify()
 {
     std::lock_guard<std::mutex> lock(m_mutex);
     if (m_checkNextTask)
@@ -81,32 +81,18 @@ void core::ThreadWorker::shutdown()
 
 void core::ThreadWorker::threadMain()
 {
-    while (true)
+    while (not m_shouldQuit)
     {
-        if (m_shouldQuit)
-        {
-            break;
-        }
-
         Task task = m_provider.nextTask();
         if (task.valid())
         {
             task();
-            m_checkNextTask = false;
             continue;
         }
+
+        m_checkNextTask = false;
 
         std::unique_lock<std::mutex> lock(m_mutex);
-        if (m_checkNextTask)
-        {
-            continue;
-        }
-
-        if (m_shouldQuit)
-        {
-            break;
-        }
-
         m_condition.wait(lock);
     }
 }

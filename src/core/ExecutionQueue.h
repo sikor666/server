@@ -93,7 +93,7 @@ template <typename R, typename T> std::future<R> core::ExecutionQueue<R, T>::pus
     pushObject(std::move(queuedObject));
     if (m_executionPool)
     {
-        m_executionPool->notifyOneWorker();
+        m_executionPool->notifyWorker();
     }
 
     return future;

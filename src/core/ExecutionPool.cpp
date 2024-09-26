@@ -19,25 +19,13 @@ void ExecutionPool::removeProvider(ITaskProvider & provider)
     m_providerGroup.removeProvider(provider);
 }
 
-bool ExecutionPool::notifyOneWorker()
-{
-    return details::NotifyWorkers(m_workers, true);
-}
-
-void ExecutionPool::notifyAllWorkers()
-{
-    details::NotifyWorkers(m_workers, false);
-}
-
-// Details
-
-bool details::NotifyWorkers(const std::vector<std::unique_ptr<IThreadWorker>> & workers, const bool single)
+bool ExecutionPool::notifyWorker()
 {
     bool notified = false;
-    for (const auto & worker : workers)
+    for (const auto & worker : m_workers)
     {
-        notified |= worker->notifyWorker();
-        if (notified and single)
+        notified |= worker->notify();
+        if (notified)
         {
             return true;
         }

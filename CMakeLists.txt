@@ -13,7 +13,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/core)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/network)
 
 # Add executable
-add_executable(blocking_tcp_echo_server src/blocking_tcp_echo_server.cpp
+add_executable(parallel_server src/blocking_tcp_echo_server.cpp
     src/network/parallel/Server.cpp
     src/network/parallel/Session.cpp
 
@@ -23,9 +23,16 @@ add_executable(blocking_tcp_echo_server src/blocking_tcp_echo_server.cpp
     src/core/ThreadWorker.cpp
     src/core/CancelTokenProvider.cpp)
 
-add_executable(blocking_tcp_echo_client src/blocking_tcp_echo_client.cpp)
+add_executable(parallel_client src/blocking_tcp_echo_client.cpp
+    src/network/parallel/Client.cpp
 
-add_executable(async_tcp_echo_server src/async_tcp_echo_server.cpp
+    src/core/ExecutionFactory.cpp
+    src/core/ExecutionPool.cpp
+    src/core/TaskProviderList.cpp
+    src/core/ThreadWorker.cpp
+    src/core/CancelTokenProvider.cpp)
+
+add_executable(async_server src/async_tcp_echo_server.cpp
     src/network/async/Server.cpp
     src/network/async/Session.cpp
 

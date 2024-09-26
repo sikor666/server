@@ -15,8 +15,7 @@ public:
     virtual void addProvider(ITaskProvider & provider) = 0;
     virtual void removeProvider(ITaskProvider & provider) = 0;
 
-    virtual bool notifyOneWorker() = 0;
-    virtual void notifyAllWorkers() = 0;
+    virtual bool notifyWorker() = 0;
 };
 
 class ExecutionPool : public IExecutionPool
@@ -27,8 +26,7 @@ public:
     virtual void addProvider(ITaskProvider & provider) final;
     virtual void removeProvider(ITaskProvider & provider) final;
 
-    virtual bool notifyOneWorker() final;
-    virtual void notifyAllWorkers() final;
+    virtual bool notifyWorker() final;
 
 private:
     std::atomic_bool m_valid{true};
@@ -36,8 +34,4 @@ private:
 
     std::vector<std::unique_ptr<IThreadWorker>> m_workers;
 };
-
-namespace details {
-bool NotifyWorkers(const std::vector<std::unique_ptr<IThreadWorker>> & workers, const bool single);
-} // namespace details
 } // namespace core

@@ -13,13 +13,19 @@ struct Command
 
 constexpr int32_t End = 0;
 
+namespace network {
+namespace parallel {
 class Client
 {
 public:
     Client(boost::asio::io_context & io_context);
     ~Client();
 
+    void send(const std::string & host, const std::string & service, const std::string & command);
+
 private:
     boost::asio::ip::tcp::socket socket;
     boost::asio::ip::tcp::resolver resolver;
 };
+} // namespace parallel
+} // namespace network

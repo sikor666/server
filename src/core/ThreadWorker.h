@@ -21,7 +21,7 @@ class IThreadWorker
 public:
     virtual ~IThreadWorker() = default;
 
-    virtual bool notifyWorker() = 0;
+    virtual bool notify() = 0;
 };
 
 class IThreadWorkerFactory
