@@ -1,3 +1,4 @@
+#include "Command.h"
 #include "parallel/Client.h"
 
 #include "ExecutionFactory.h"
@@ -8,8 +9,8 @@ int main(int argc, char * argv[])
 {
     try
     {
-        std::cout << "Command: " << sizeof(Command) << "\n";
-        std::cout << "End: " << sizeof(End) << "\n";
+        std::cout << "Command: " << sizeof(network::Command) << "\n";
+        std::cout << "End: " << sizeof(network::End) << "\n";
 
         if (argc != 3)
         {

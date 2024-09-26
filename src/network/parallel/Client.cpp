@@ -16,10 +16,6 @@ Client::Client(boost::asio::io_context & io_context)
 {
 }
 
-Client::~Client()
-{
-}
-
 void Client::send(const std::string & host, const std::string & service, const std::string & command)
 {
     boost::asio::connect(socket, resolver.resolve(host, service));
