@@ -36,7 +36,7 @@ sudo sysctl -w net.ipv4.tcp_fin_timeout=30
 # net.ipv4.tcp_fin_timeout = 30
 
 
-#tcp_tw_reuse - INTEGER
+# tcp_tw_reuse - INTEGER
 #
 #    Enable reuse of TIME-WAIT sockets for new connections when it is safe from protocol
 #    viewpoint.
