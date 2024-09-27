@@ -9,7 +9,7 @@ class Client
 public:
     Client(boost::asio::io_context & io_context);
 
-    void send(const std::string & host, const std::string & service, const std::string & command);
+    void send(const std::string & host, const std::string & service, const std::vector<uint8_t> & command);
 
 private:
     boost::asio::ip::tcp::socket socket;

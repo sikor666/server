@@ -17,7 +17,8 @@ constexpr int32_t End = 0;
 
 template <typename Data> void bufferInsert(std::vector<uint8_t> & buffer, const Data & data)
 {
-    buffer.insert(
-        buffer.begin(), reinterpret_cast<const uint8_t *>(&data), reinterpret_cast<const uint8_t *>(&data) + sizeof(data));
+    const auto * begin = reinterpret_cast<const uint8_t *>(&data);
+
+    buffer.insert(buffer.end(), begin, begin + sizeof(data));
 }
 } // namespace network

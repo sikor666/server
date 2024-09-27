@@ -16,12 +16,12 @@ Client::Client(boost::asio::io_context & io_context)
 {
 }
 
-void Client::send(const std::string & host, const std::string & service, const std::string & command)
+void Client::send(const std::string & host, const std::string & service, const std::vector<uint8_t> & command)
 {
     try
     {
         boost::asio::connect(socket, resolver.resolve(host, service));
-        boost::asio::write(socket, boost::asio::buffer(command, command.size()));
+        boost::asio::write(socket, boost::asio::buffer(command));
 
         char reply[max_length];
         size_t reply_length = boost::asio::read(socket, boost::asio::buffer(reply, command.size()));
