@@ -28,12 +28,11 @@ int main(int argc, char * argv[])
                     // Execution function is called in parallel on the next free thread with the next object from the queue
                     [&number, host{std::string{argv[1]}}, service{std::string{argv[2]}}](
                         const std::atomic_bool & isCanceled, std::shared_ptr<network::parallel::Client> && object) {
-                        std::cout << "[" << std::this_thread::get_id() << "] start\n";
-                        object->send(host, service, "ooo\n");
-                        number++;
+                        object->send(host, service, "xxx\n");
+                        std::cout << "[" << ++number << "] [" << std::this_thread::get_id() << "] done\n";
                     });
 
-            for (size_t i = 0; i < 198344; i++)
+            for (size_t i = 0; i < 1983666; i++)
             {
                 std::cout << "[" << std::this_thread::get_id() << "] push\n";
                 m_executionQueue->push(std::make_shared<network::parallel::Client>(io_context));

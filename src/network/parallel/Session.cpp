@@ -14,10 +14,6 @@ Session::Session(boost::asio::ip::tcp::socket socket)
 {
 }
 
-Session::~Session()
-{
-}
-
 void Session::operator()()
 {
     try
@@ -36,13 +32,13 @@ void Session::operator()()
             std::cout << "[" << std::this_thread::get_id() << "] " << std::string{data, length};
             boost::asio::write(m_socket, boost::asio::buffer(data, length));
         }
+
+        std::cout << "[" << std::this_thread::get_id() << "] Connection closed cleanly by peer\n";
     }
     catch (std::exception & e)
     {
         std::cerr << "Exception in thread: " << e.what() << "\n";
     }
-
-    std::cout << "[" << std::this_thread::get_id() << "] Connection closed cleanly by peer\n";
 }
 } // namespace parallel
 } // namespace network

@@ -8,7 +8,6 @@ class Session
 {
 public:
     Session(boost::asio::ip::tcp::socket socket);
-    ~Session();
 
     void operator()();
 
