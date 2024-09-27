@@ -26,7 +26,7 @@ void Client::send(const std::string & host, const std::string & service, const s
         char reply[max_length];
         size_t reply_length = boost::asio::read(socket, boost::asio::buffer(reply, command.size()));
 
-        std::cout << "Reply is: " << std::string{reply, reply_length} << "\n";
+        std::cout << "Reply is:\n" << std::string{reply, reply_length} << "\n";
     }
     catch (const std::exception & ex)
     {

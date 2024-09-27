@@ -25,6 +25,7 @@ add_executable(parallel_server src/blocking_tcp_echo_server.cpp
 
 add_executable(parallel_client src/blocking_tcp_echo_client.cpp
     src/network/parallel/Client.cpp
+    src/network/protocol/Command.cpp
 
     src/core/ExecutionFactory.cpp
     src/core/ExecutionPool.cpp
