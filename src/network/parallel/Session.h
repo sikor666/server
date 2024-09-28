@@ -15,7 +15,7 @@ private:
     bool read();
 
     boost::asio::ip::tcp::socket m_socket;
-    std::vector<uint8_t> m_buffer;
+    std::vector<int8_t> m_buffer;
 };
 } // namespace parallel
 } // namespace network

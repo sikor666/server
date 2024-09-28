@@ -1,7 +1,6 @@
 #pragma once
 
-#include <cstdint>
-#include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -12,9 +11,8 @@ struct Header
 {
     int32_t id;
     int32_t length;
-    uint8_t payload[0];
+    int8_t payload[0];
 };
-
 struct Footer
 {
     int32_t end;
@@ -26,30 +24,25 @@ class ICommand
 public:
     virtual ~ICommand() = default;
 
-    virtual const std::vector<uint8_t> & frame() const = 0;
+    virtual const std::vector<int8_t> & frame() const = 0;
+    virtual void print() const = 0;
 };
 
-class CommandOne : public ICommand
-{
-public:
-    CommandOne(const std::string & payload);
-
-    virtual const std::vector<uint8_t> & frame() const final;
-
-private:
-    std::vector<uint8_t> m_buffer;
-};
+namespace command {
+std::unique_ptr<ICommand> error();
+std::unique_ptr<ICommand> create(const std::string & payload);
+std::unique_ptr<ICommand> create(const uint64_t & payload);
+std::unique_ptr<ICommand> make(int32_t id, const std::vector<int8_t> & payload);
+} // namespace command
 
 namespace buffer {
-void insert(std::vector<uint8_t> & buffer, const std::string & data);
-// FIXME: Use decorator, enable_if and specialization for string
+std::unique_ptr<ICommand> deserialize(const std::vector<int8_t> & buffer);
+
+void insert(std::vector<int8_t> & buffer, const std::string & data);
 template <typename T, typename = std::enable_if_t<std::is_trivial<T>::value and not std::is_pointer<T>::value>>
-void insert(std::vector<uint8_t> & buffer, T && data)
+void insert(std::vector<int8_t> & buffer, const T & data)
 {
-    std::cout << "typename: " << typeid(data).name() << "\n";
-
-    const auto * begin = reinterpret_cast<const uint8_t *>(&data);
-
+    const auto * begin = reinterpret_cast<const int8_t *>(&data);
     buffer.insert(buffer.end(), begin, begin + sizeof(data));
 }
 } // namespace buffer

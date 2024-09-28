@@ -25,12 +25,14 @@ const char data[]{"\
 0123456789012345678901234567890123456789\n\
 "};
 
+using namespace network::protocol;
+
 int main(int argc, char * argv[])
 {
     try
     {
-        std::cout << "Header: " << sizeof(network::protocol::Header) << "\n";
-        std::cout << "End: " << sizeof(network::protocol::Footer) << "\n";
+        std::cout << "Header: " << sizeof(Header) << "\n";
+        std::cout << "End: " << sizeof(Footer) << "\n";
 
         if (argc != 3)
         {
@@ -40,6 +42,7 @@ int main(int argc, char * argv[])
 
         boost::asio::io_context io_context;
         std::atomic_size_t number{0};
+
         const auto start = std::chrono::steady_clock::now();
         {
             const auto m_executionPool = core::CreateExecutionPool();
@@ -48,7 +51,8 @@ int main(int argc, char * argv[])
                     // Execution function is called in parallel on the next free thread with the next object from the queue
                     [&number, host{std::string{argv[1]}}, service{std::string{argv[2]}}](
                         const std::atomic_bool & isCanceled, std::shared_ptr<network::parallel::Client> && object) {
-                        object->send(host, service, network::protocol::CommandOne{"xxx xxx xx"}.frame());
+                        object->send(host, service, command::create("abc")->frame());
+                        object->send(host, service, command::create(1234)->frame());
                         std::cout << "[" << std::this_thread::get_id() << "][" << ++number << "] done\n";
                     });
 

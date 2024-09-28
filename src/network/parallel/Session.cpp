@@ -6,8 +6,6 @@
 #include <iostream>
 #include <thread>
 
-// constexpr int max_length = 1024;
-
 namespace network {
 namespace parallel {
 Session::Session(boost::asio::ip::tcp::socket socket)
@@ -26,11 +24,11 @@ bool Session::read()
             // Read header
             case 0: size = sizeof(network::protocol::Header); break;
             // Read payload
-            case 1: size = reinterpret_cast<network::protocol::Header *>(m_buffer.data())->length; break;
+            case 1: size = reinterpret_cast<const network::protocol::Header *>(m_buffer.data())->length; break;
             // Read footer
             case 2: size = sizeof(network::protocol::Footer); break;
 
-            default: std::runtime_error("Invalid read state");
+            default: std::runtime_error("Invalid state");
         }
 
         m_buffer.resize(m_buffer.size() + size);
@@ -53,29 +51,13 @@ void Session::start()
 {
     try
     {
-        if (read())
-            boost::asio::write(m_socket, boost::asio::buffer(m_buffer));
-        else
-            std::cerr << "[" << std::this_thread::get_id() << "] Connection closed cleanly by peer\n";
-
-        /*
-        for (;;)
+        while (read())
         {
-            char data[max_length];
-
-            boost::system::error_code error;
-            size_t length = m_socket.read_some(boost::asio::buffer(data), error);
-            if (error == boost::asio::stream_errc::eof)
-                break; // Connection closed cleanly by peer.
-            else if (error)
-                throw boost::system::system_error(error); // Some other error.
-
-            std::cout << "[" << std::this_thread::get_id() << "] Request:\n" << std::string{data, length};
-            boost::asio::write(m_socket, boost::asio::buffer(data, length));
+            network::protocol::buffer::deserialize(m_buffer)->print();
+            boost::asio::write(m_socket, boost::asio::buffer(m_buffer));
         }
 
-        std::cout << "[" << std::this_thread::get_id() << "] Connection closed cleanly by peer\n";
-        */
+        std::cerr << "[" << std::this_thread::get_id() << "] Connection closed cleanly by peer\n";
     }
     catch (std::exception & e)
     {

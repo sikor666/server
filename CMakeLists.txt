@@ -16,6 +16,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/network)
 add_executable(parallel_server src/blocking_tcp_echo_server.cpp
     src/network/parallel/Server.cpp
     src/network/parallel/Session.cpp
+    src/network/protocol/Command.cpp
+    src/network/protocol/CommandOne.cpp
+    src/network/protocol/CommandTwo.cpp
 
     src/core/ExecutionFactory.cpp
     src/core/ExecutionPool.cpp
@@ -26,6 +29,8 @@ add_executable(parallel_server src/blocking_tcp_echo_server.cpp
 add_executable(parallel_client src/blocking_tcp_echo_client.cpp
     src/network/parallel/Client.cpp
     src/network/protocol/Command.cpp
+    src/network/protocol/CommandOne.cpp
+    src/network/protocol/CommandTwo.cpp
 
     src/core/ExecutionFactory.cpp
     src/core/ExecutionPool.cpp

@@ -81,9 +81,15 @@ void core::ThreadWorker::shutdown()
 
 void core::ThreadWorker::threadMain()
 {
-    while (not m_shouldQuit)
+    while (true)
     {
+        if (m_shouldQuit)
+        {
+            break;
+        }
+
         Task task = m_provider.nextTask();
+
         if (task.valid())
         {
             task();
@@ -93,6 +99,12 @@ void core::ThreadWorker::threadMain()
         m_checkNextTask = false;
 
         std::unique_lock<std::mutex> lock(m_mutex);
+
+        if (m_shouldQuit)
+        {
+            break;
+        }
+
         m_condition.wait(lock);
     }
 }

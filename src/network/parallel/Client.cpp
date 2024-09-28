@@ -1,4 +1,5 @@
-#include "Client.h"
+#include "parallel/Client.h"
+#include "protocol/Command.h"
 
 #include <boost/asio/connect.hpp>
 #include <boost/asio/ip/tcp.hpp>
@@ -16,7 +17,7 @@ Client::Client(boost::asio::io_context & io_context)
 {
 }
 
-void Client::send(const std::string & host, const std::string & service, const std::vector<uint8_t> & command)
+void Client::send(const std::string & host, const std::string & service, const std::vector<int8_t> & command)
 {
     try
     {
@@ -26,7 +27,8 @@ void Client::send(const std::string & host, const std::string & service, const s
         char reply[max_length];
         size_t reply_length = boost::asio::read(socket, boost::asio::buffer(reply, command.size()));
 
-        std::cout << "Reply is:\n" << std::string{reply, reply_length} << "\n";
+        // Reply is:
+        network::protocol::buffer::deserialize(std::vector<int8_t>{reply, reply + reply_length})->print();
     }
     catch (const std::exception & ex)
     {
