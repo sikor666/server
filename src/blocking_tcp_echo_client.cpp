@@ -53,6 +53,7 @@ int main(int argc, char * argv[])
                         const std::atomic_bool & isCanceled, std::shared_ptr<network::parallel::Client> && object) {
                         object->send(host, service, command::create("abc")->frame());
                         object->send(host, service, command::create(1234)->frame());
+                        object->send(host, service, command::error()->frame());
                         std::cout << "[" << std::this_thread::get_id() << "][" << ++number << "] done\n";
                     });
 
