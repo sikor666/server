@@ -46,9 +46,12 @@ int main(int argc, char * argv[])
         std::atomic_size_t number{0};
 
         std::vector<std::vector<int8_t>> frames;
-        frames.emplace_back(command::create("abc")->frame());
-        frames.emplace_back(command::create(1234)->frame());
-        frames.emplace_back(command::error()->frame());
+        frames.emplace_back(command::create("abc")->frame()); // command 1: ok
+        frames.emplace_back(command::create(1234)->frame());  // command 2: ok
+        frames.emplace_back(std::vector<int8_t>{});           // command 3: error (undefined)
+        buffer::insert(frames.back(), Header{3, 3});
+        buffer::insert(frames.back(), std::string{"xxx"});
+        buffer::insert(frames.back(), Footer{0});
 
         const auto start = std::chrono::steady_clock::now();
         {
