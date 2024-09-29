@@ -1,3 +1,7 @@
+#include "ExecutionFactory.h"
+
+#include "session.h"
+
 #include <cerrno>
 #include <csignal>
 #include <cstdio>
@@ -115,6 +119,15 @@ int main(void)
 
     printf("server: waiting for connections...\n");
 
+    std::shared_ptr<core::IExecutionPool> m_executionPool{core::CreateExecutionPool()};
+    std::unique_ptr<core::IExecutionQueue<void(std::shared_ptr<session>)>> m_executionQueue{
+        core::CreateConcurrentExecutionQueue<void, std::shared_ptr<session>>(m_executionPool,
+            // Execution function is called in parallel on the next free thread with the next object from the queue
+            [](const std::atomic_bool & isCanceled, std::shared_ptr<session> && session) {
+                //   std::cout << "[" << std::this_thread::get_id() << "] start\n";
+                session->start();
+            })};
+
     while (1) // main accept() loop
     {
         sin_size = sizeof(their_addr);
@@ -126,8 +139,11 @@ int main(void)
         }
 
         inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *)&their_addr), s, sizeof(s));
-        printf("server: got connection from %s\n", s);
+        // printf("server: got connection from %s\n", s);
 
+        m_executionQueue->push(std::make_shared<session>(std::move(new_fd)));
+
+        /*
         if (!fork())
         {                  // this is the child process
             close(sockfd); // child doesn't need the listener
@@ -143,6 +159,7 @@ int main(void)
             exit(0);
         }
         close(new_fd); // parent doesn't need this
+        */
     }
 
     return 0;
