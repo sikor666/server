@@ -13,8 +13,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/core)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/network)
 
 # Add executable
-add_executable(posix_server src/network/posix/server.cpp
-    src/network/posix/session.cpp
+add_executable(posix_server src/network/posix/Server.cpp
+    src/network/posix/Session.cpp
 
     src/core/ExecutionFactory.cpp
     src/core/ExecutionPool.cpp
@@ -22,7 +22,7 @@ add_executable(posix_server src/network/posix/server.cpp
     src/core/ThreadWorker.cpp
     src/core/CancelTokenProvider.cpp)
 
-add_executable(posix_client src/network/posix/client.cpp)
+add_executable(posix_client src/network/posix/Client.cpp)
 
 add_executable(parallel_server src/blocking_tcp_echo_server.cpp
     src/network/parallel/Server.cpp
