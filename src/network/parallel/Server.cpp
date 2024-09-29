@@ -4,8 +4,6 @@
 #include "ExecutionFactory.h"
 
 #include <iostream>
-#include <memory>
-#include <thread>
 
 namespace network {
 namespace parallel {
@@ -22,13 +20,9 @@ Server::Server(uint16_t port)
 {
 }
 
-Server::~Server()
-{
-}
-
 void Server::run()
 {
-    for (;;)
+    while (true)
     {
         try
         {

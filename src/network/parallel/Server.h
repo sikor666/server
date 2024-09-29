@@ -16,7 +16,6 @@ class Server
 {
 public:
     Server(uint16_t port);
-    ~Server();
 
     void run();
 
