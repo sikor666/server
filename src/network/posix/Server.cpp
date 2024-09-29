@@ -27,7 +27,7 @@ void sigchld_handler(int s)
     // waitpid() might overwrite errno, so we save and restore it:
     int saved_errno = errno;
 
-    while (waitpid(-1, NULL, WNOHANG) > 0)
+    while (waitpid(-1, nullptr, WNOHANG) > 0)
         ;
 
     errno = saved_errno;
@@ -62,14 +62,14 @@ int main(void)
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE; // use my IP
 
-    if ((rv = getaddrinfo(NULL, PORT, &hints, &servinfo)) != 0)
+    if ((rv = getaddrinfo(nullptr, PORT, &hints, &servinfo)) != 0)
     {
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
         return 1;
     }
 
     // loop through all the results and bind to the first we can
-    for (p = servinfo; p != NULL; p = p->ai_next)
+    for (p = servinfo; p != nullptr; p = p->ai_next)
     {
         if ((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1)
         {
@@ -95,7 +95,7 @@ int main(void)
 
     freeaddrinfo(servinfo); // all done with this structure
 
-    if (p == NULL)
+    if (p == nullptr)
     {
         fprintf(stderr, "server: failed to bind\n");
         exit(1);
@@ -110,7 +110,7 @@ int main(void)
     sa.sa_handler = sigchld_handler; // reap all dead processes
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = SA_RESTART;
-    if (sigaction(SIGCHLD, &sa, NULL) == -1)
+    if (sigaction(SIGCHLD, &sa, nullptr) == -1)
     {
         perror("sigaction");
         exit(1);
@@ -127,7 +127,7 @@ int main(void)
                 session->start();
             })};
 
-    while (1) // main accept() loop
+    while (true) // main accept() loop
     {
         sin_size = sizeof(their_addr);
         new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
