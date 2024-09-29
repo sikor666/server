@@ -41,7 +41,14 @@ int main(int argc, char * argv[])
         }
 
         boost::asio::io_context io_context;
+        std::string host{argv[1]};
+        std::string service{argv[2]};
         std::atomic_size_t number{0};
+
+        std::vector<std::vector<int8_t>> frames;
+        frames.emplace_back(command::create("abc")->frame());
+        frames.emplace_back(command::create(1234)->frame());
+        frames.emplace_back(command::error()->frame());
 
         const auto start = std::chrono::steady_clock::now();
         {
@@ -49,15 +56,15 @@ int main(int argc, char * argv[])
             const auto m_executionQueue =
                 core::CreateConcurrentExecutionQueue<void, std::shared_ptr<network::parallel::Client>>(m_executionPool,
                     // Execution function is called in parallel on the next free thread with the next object from the queue
-                    [&number, host{std::string{argv[1]}}, service{std::string{argv[2]}}](
+                    [&host, &service, &number, &frames](
                         const std::atomic_bool & isCanceled, std::shared_ptr<network::parallel::Client> && object) {
-                        object->send(host, service, command::create("abc")->frame());
-                        object->send(host, service, command::create(1234)->frame());
-                        object->send(host, service, command::error()->frame());
-                        std::cout << "[" << std::this_thread::get_id() << "][" << ++number << "] done\n";
+                        const auto modulo = ++number % frames.size();
+                        object->send(host, service, frames[modulo]);
+                        std::cout << "[" << std::this_thread::get_id() << "][number: " << number << "][modulo: " << modulo
+                                  << "] done\n";
                     });
 
-            for (size_t i = 0; i < 2; i++)
+            for (size_t i = 0; i < 1983666; i++)
             {
                 std::cout << "[" << std::this_thread::get_id() << "][" << number << "] push\n";
                 m_executionQueue->push(std::make_shared<network::parallel::Client>(io_context));
