@@ -13,8 +13,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/core)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/network)
 
 # Add executable
-add_executable(posix_server src/network/posix/server.c)
-add_executable(posix_client src/network/posix/client.c)
+add_executable(posix_server src/network/posix/server.cpp)
+add_executable(posix_client src/network/posix/client.cpp)
 
 add_executable(parallel_server src/blocking_tcp_echo_server.cpp
     src/network/parallel/Server.cpp
