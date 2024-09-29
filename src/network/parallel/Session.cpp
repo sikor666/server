@@ -29,8 +29,8 @@ bool Session::read()
         else if (error)
             throw boost::system::system_error(error); // Some other error
 
-        boost::asio::write(m_socket, boost::asio::buffer(data, length));
-
+        // boost::asio::write(m_socket, boost::asio::buffer(data, length));
+        // std::cout << "Read: " << length << "\n";
         m_buffer.insert(m_buffer.end(), data, data + length);
     }
 
