@@ -15,9 +15,9 @@ int main(int argc, char * argv[])
         network::parallel::Server server(std::atoi(argv[1]));
         server.run();
     }
-    catch (std::exception & e)
+    catch (const std::exception & ex)
     {
-        std::cerr << "Exception: " << e.what() << "\n";
+        std::cerr << "Exception: " << ex.what() << "\n";
     }
 
     return 0;

@@ -78,9 +78,9 @@ int main(int argc, char * argv[])
 
         std::cout << "[number: " << number << "][time: " << static_cast<double>(time) / 1000000.0 << " s]\n";
     }
-    catch (std::exception & e)
+    catch (const std::exception & ex)
     {
-        std::cerr << "Exception: " << e.what() << "\n";
+        std::cerr << "Exception: " << ex.what() << "\n";
     }
 
     return 0;

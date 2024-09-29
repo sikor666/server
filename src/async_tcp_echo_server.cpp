@@ -18,9 +18,9 @@ int main(int argc, char * argv[])
 
         io_context.run();
     }
-    catch (std::exception & e)
+    catch (const std::exception & ex)
     {
-        std::cerr << "Exception: " << e.what() << "\n";
+        std::cerr << "Exception: " << ex.what() << "\n";
         return 1;
     }
 
