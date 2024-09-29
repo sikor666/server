@@ -80,11 +80,11 @@ void Session::start()
             boost::asio::write(m_socket, boost::asio::buffer(m_buffer));
         }
 
-        std::cerr << "[" << std::this_thread::get_id() << "] Connection closed cleanly by peer\n";
+        // std::cerr << "[" << std::this_thread::get_id() << "] Connection closed cleanly by peer\n";
     }
-    catch (std::exception & e)
+    catch (const std::exception & ex)
     {
-        std::cerr << "Exception in thread: " << e.what() << "\n";
+        std::cerr << "Exception: " << ex.what() << "\n";
     }
 }
 } // namespace parallel

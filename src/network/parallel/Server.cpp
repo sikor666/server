@@ -16,7 +16,7 @@ Server::Server(uint16_t port)
     , m_executionQueue{core::CreateConcurrentExecutionQueue<void, std::shared_ptr<Session>>(m_executionPool,
           // Execution function is called in parallel on the next free thread with the next object from the queue
           [](const std::atomic_bool & isCanceled, std::shared_ptr<Session> && session) {
-              std::cout << "[" << std::this_thread::get_id() << "] start\n";
+              //   std::cout << "[" << std::this_thread::get_id() << "] start\n";
               session->start();
           })}
 {
