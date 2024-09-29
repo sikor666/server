@@ -13,7 +13,7 @@
 
 #define PORT "3490" // the port users will be connecting to
 
-#define BACKLOG 10 // how many pending connections queue will hold
+#define BACKLOG 4096 // how many pending connections queue will hold
 
 void sigchld_handler(int s)
 {
@@ -50,7 +50,7 @@ int main(void)
     char s[INET6_ADDRSTRLEN];
     int rv;
 
-    memset(&hints, 0, sizeof hints);
+    memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE; // use my IP
@@ -113,7 +113,7 @@ int main(void)
 
     while (1)
     { // main accept() loop
-        sin_size = sizeof their_addr;
+        sin_size = sizeof(their_addr);
         new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
         if (new_fd == -1)
         {
@@ -121,7 +121,7 @@ int main(void)
             continue;
         }
 
-        inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *)&their_addr), s, sizeof s);
+        inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *)&their_addr), s, sizeof(s));
         printf("server: got connection from %s\n", s);
 
         if (!fork())
