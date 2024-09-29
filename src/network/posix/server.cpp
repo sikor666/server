@@ -1,3 +1,9 @@
+#include <cerrno>
+#include <csignal>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <netinet/in.h>
@@ -5,15 +11,11 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#include <cerrno>
-#include <csignal>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
 #define PORT "3490" // the port users will be connecting to
 
 #define BACKLOG 4096 // how many pending connections queue will hold
+
+#define MAXDATASIZE 1024 // max number of bytes we can get at once
 
 void sigchld_handler(int s)
 {
@@ -42,6 +44,8 @@ void * get_in_addr(struct sockaddr * sa)
 int main(void)
 {
     int sockfd, new_fd; // listen on sock_fd, new connection on new_fd
+    int numbytes;
+    char buf[MAXDATASIZE];
     struct addrinfo hints, *servinfo, *p;
     struct sockaddr_storage their_addr; // connector's address information
     socklen_t sin_size;
@@ -111,8 +115,8 @@ int main(void)
 
     printf("server: waiting for connections...\n");
 
-    while (1)
-    { // main accept() loop
+    while (1) // main accept() loop
+    {
         sin_size = sizeof(their_addr);
         new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
         if (new_fd == -1)
@@ -127,8 +131,14 @@ int main(void)
         if (!fork())
         {                  // this is the child process
             close(sockfd); // child doesn't need the listener
-            if (send(new_fd, "Hello, world!", 13, 0) == -1)
-                perror("send");
+            // if (send(new_fd, "Hello, world!", 13, 0) == -1)
+            //     perror("send");
+            if ((numbytes = recv(new_fd, buf, MAXDATASIZE - 1, 0)) == -1)
+                perror("recv");
+
+            buf[numbytes] = '\0';
+            printf("server: received '%s'\n", buf);
+
             close(new_fd);
             exit(0);
         }
