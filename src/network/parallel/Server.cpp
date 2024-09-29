@@ -30,13 +30,18 @@ void Server::run()
 {
     for (;;)
     {
-        boost::asio::ip::tcp::socket sock{m_io_context};
-        m_acceptor.accept(sock);
+        try
+        {
+            boost::asio::ip::tcp::socket sock{m_io_context};
+            m_acceptor.accept(sock);
 
-        // std::thread{[](boost::asio::ip::tcp::socket sock) { Session{std::move(sock)}(); }, std::move(sock)}.detach();
-
-        std::cout << "[" << std::this_thread::get_id() << "] push\n";
-        m_executionQueue->push(std::make_shared<Session>(std::move(sock)));
+            // std::cout << "[" << std::this_thread::get_id() << "] push\n";
+            m_executionQueue->push(std::make_shared<Session>(std::move(sock)));
+        }
+        catch (const std::exception & ex)
+        {
+            std::cerr << "Exception: " << ex.what() << "\n";
+        }
     }
 }
 } // namespace parallel
