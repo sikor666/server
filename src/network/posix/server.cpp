@@ -15,7 +15,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#define PORT "3490" // the port users will be connecting to
+#define PORT "2345" // the port users will be connecting to
 
 #define BACKLOG 4096 // how many pending connections queue will hold
 

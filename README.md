@@ -54,7 +54,7 @@ sudo sysctl -w net.ipv4.tcp_tw_reuse=1
 # net.ipv4.tcp_tw_reuse = 1
 ```
 
-Too many open files:
+[accept] Too many open files:
 ``` bash
 olive@slimcase-666:~/Workspace/git/server/build$ ulimit -a
 -t: cpu time (seconds)              unlimited

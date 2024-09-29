@@ -28,5 +28,5 @@ void session::start()
     buf[numbytes] = '\0';
     // printf("server: received '%s'\n", buf);
 
-    usleep(500);
+    // usleep(500);
 }
