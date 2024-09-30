@@ -42,8 +42,8 @@ void insert(std::vector<int8_t> & buffer, const std::string & data);
 template <typename T, typename = std::enable_if_t<std::is_trivial<T>::value and not std::is_pointer<T>::value>>
 void insert(std::vector<int8_t> & buffer, const T & data)
 {
-    const auto * begin = reinterpret_cast<const int8_t *>(&data);
-    buffer.insert(buffer.end(), begin, begin + sizeof(data));
+    const auto * begin = reinterpret_cast<const uint8_t *>(&data);
+    buffer.insert(buffer.end(), begin, begin + sizeof(T));
 }
 } // namespace buffer
 } // namespace protocol
