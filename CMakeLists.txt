@@ -18,6 +18,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/network)
 # Add executable
 add_executable(posix_server src/network/posix/Server.cpp
     src/network/posix/Session.cpp
+    src/network/protocol/Command.cpp
+    src/network/protocol/CommandOne.cpp
+    src/network/protocol/CommandTwo.cpp
 
     src/core/ExecutionFactory.cpp
     src/core/ExecutionPool.cpp

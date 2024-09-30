@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cstdint>
+#include <vector>
+
 class session
 {
 public:
@@ -10,4 +13,6 @@ public:
 
 private:
     int m_socket;
+
+    std::vector<int8_t> m_data;
 };
