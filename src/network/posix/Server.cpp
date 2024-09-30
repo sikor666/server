@@ -18,14 +18,14 @@
 #define BACKLOG 4096     // how many pending connections queue will hold
 
 // get sockaddr, IPv4 or IPv6:
-void * get_in_addr(struct sockaddr * sa)
+void * get_in_addr(sockaddr * sa)
 {
     if (sa->sa_family == AF_INET)
     {
-        return &(((struct sockaddr_in *)sa)->sin_addr);
+        return &(((sockaddr_in *)sa)->sin_addr);
     }
 
-    return &(((struct sockaddr_in6 *)sa)->sin6_addr);
+    return &(((sockaddr_in6 *)sa)->sin6_addr);
 }
 
 int main(void)
@@ -33,8 +33,8 @@ int main(void)
     int sockfd, new_fd; // listen on sock_fd, new connection on new_fd
     int numbytes;
     char buf[MAXDATASIZE];
-    struct addrinfo hints, *servinfo, *p;
-    struct sockaddr_storage their_addr; // connector's address information
+    addrinfo hints, *servinfo, *p;
+    sockaddr_storage their_addr; // connector's address information
     socklen_t sin_size;
     int yes = 1;
     char s[INET6_ADDRSTRLEN];
@@ -48,7 +48,7 @@ int main(void)
     if ((rv = getaddrinfo(nullptr, PORT, &hints, &servinfo)) != 0)
     {
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
-        return EXIT_FAILURE;
+        std::exit(EXIT_FAILURE);
     }
 
     // loop through all the results and bind to the first we can
@@ -104,14 +104,14 @@ int main(void)
     while (true) // main accept loop
     {
         sin_size = sizeof(their_addr);
-        new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
+        new_fd = accept(sockfd, (sockaddr *)&their_addr, &sin_size);
         if (new_fd == -1)
         {
             std::perror("accept");
             continue;
         }
 
-        inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *)&their_addr), s, sizeof(s));
+        inet_ntop(their_addr.ss_family, get_in_addr((sockaddr *)&their_addr), s, sizeof(s));
         // printf("server: got connection from %s\n", s);
 
         m_executionQueue->push(std::make_shared<session>(std::move(new_fd)));
