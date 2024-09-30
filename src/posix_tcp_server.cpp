@@ -91,14 +91,11 @@ int main(void)
         std::exit(EXIT_FAILURE);
     }
 
-    // printf("server: waiting for connections...\n");
-
     std::shared_ptr<core::IExecutionPool> m_executionPool{core::CreateExecutionPool()};
     std::unique_ptr<core::IExecutionQueue<void(std::shared_ptr<session>)>> m_executionQueue{
         core::CreateConcurrentExecutionQueue<void, std::shared_ptr<session>>(m_executionPool,
             // Execution function is called in parallel on the next free thread with the next object from the queue
             [](const std::atomic_bool & isCanceled, std::shared_ptr<session> && session) {
-                //   std::cout << "[" << std::this_thread::get_id() << "] start\n";
                 session->start();
             })};
 
@@ -113,7 +110,6 @@ int main(void)
         }
 
         inet_ntop(their_addr.ss_family, get_in_addr((sockaddr *)&their_addr), addr_str, sizeof(addr_str));
-        // printf("server: got connection from %s\n", addr_str);
 
         m_executionQueue->push(std::make_shared<session>(std::move(new_fd)));
     }
