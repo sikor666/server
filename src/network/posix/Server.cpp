@@ -48,7 +48,7 @@ int main(void)
     if ((rv = getaddrinfo(nullptr, PORT, &hints, &servinfo)) != 0)
     {
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
-        return 1;
+        return EXIT_FAILURE;
     }
 
     // loop through all the results and bind to the first we can
@@ -56,20 +56,20 @@ int main(void)
     {
         if ((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1)
         {
-            perror("server: socket");
+            std::perror("socket");
             continue;
         }
 
         if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
         {
-            perror("setsockopt");
-            exit(1);
+            std::perror("setsockopt");
+            std::exit(EXIT_FAILURE);
         }
 
         if (bind(sockfd, p->ai_addr, p->ai_addrlen) == -1)
         {
             close(sockfd);
-            perror("server: bind");
+            std::perror("bind");
             continue;
         }
 
@@ -81,16 +81,16 @@ int main(void)
     if (p == nullptr)
     {
         fprintf(stderr, "server: failed to bind\n");
-        exit(1);
+        std::exit(EXIT_FAILURE);
     }
 
     if (listen(sockfd, BACKLOG) == -1)
     {
-        perror("listen");
-        exit(1);
+        std::perror("listen");
+        std::exit(EXIT_FAILURE);
     }
 
-    printf("server: waiting for connections...\n");
+    // printf("server: waiting for connections...\n");
 
     std::shared_ptr<core::IExecutionPool> m_executionPool{core::CreateExecutionPool()};
     std::unique_ptr<core::IExecutionQueue<void(std::shared_ptr<session>)>> m_executionQueue{
@@ -107,7 +107,7 @@ int main(void)
         new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
         if (new_fd == -1)
         {
-            perror("accept");
+            std::perror("accept");
             continue;
         }
 
@@ -117,5 +117,5 @@ int main(void)
         m_executionQueue->push(std::make_shared<session>(std::move(new_fd)));
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }
