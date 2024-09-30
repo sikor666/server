@@ -33,20 +33,18 @@ void * get_in_addr(sockaddr * sa)
 int main(void)
 {
     int sockfd, new_fd; // listen on sock_fd, new connection on new_fd
-    int numbytes;
-    char buf[MAXDATASIZE];
-    addrinfo hints, *servinfo, *p;
-    sockaddr_storage their_addr; // connector's address information
+    addrinfo hints{}, *servinfo{nullptr}, *p{nullptr};
+    sockaddr_storage their_addr{}; // connector's address information
     socklen_t sin_size;
-    int yes = 1;
-    char s[INET6_ADDRSTRLEN];
-    int rv;
+    int yes{1};
+    char addr_str[INET6_ADDRSTRLEN];
 
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE; // use my IP
 
+    int rv;
     if ((rv = getaddrinfo(nullptr, PORT, &hints, &servinfo)) != 0)
     {
         std::cerr << "getaddrinfo: " << gai_strerror(rv) << "\n";
@@ -113,8 +111,8 @@ int main(void)
             continue;
         }
 
-        inet_ntop(their_addr.ss_family, get_in_addr((sockaddr *)&their_addr), s, sizeof(s));
-        // printf("server: got connection from %s\n", s);
+        inet_ntop(their_addr.ss_family, get_in_addr((sockaddr *)&their_addr), addr_str, sizeof(addr_str));
+        // printf("server: got connection from %s\n", addr_str);
 
         m_executionQueue->push(std::make_shared<session>(std::move(new_fd)));
     }
