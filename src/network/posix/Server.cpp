@@ -1,6 +1,8 @@
 #include "ExecutionFactory.h"
 #include "Session.h"
 
+#include <iostream>
+
 #include <cerrno>
 #include <csignal>
 #include <cstdio>
@@ -47,7 +49,7 @@ int main(void)
 
     if ((rv = getaddrinfo(nullptr, PORT, &hints, &servinfo)) != 0)
     {
-        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
+        std::cerr << "getaddrinfo: " << gai_strerror(rv) << "\n";
         std::exit(EXIT_FAILURE);
     }
 
@@ -80,7 +82,7 @@ int main(void)
 
     if (p == nullptr)
     {
-        fprintf(stderr, "server: failed to bind\n");
+        std::cerr << "server: failed to bind\n";
         std::exit(EXIT_FAILURE);
     }
 
