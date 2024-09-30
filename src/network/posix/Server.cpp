@@ -14,24 +14,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#define PORT "2345" // the port users will be connecting to
-
-#define BACKLOG 4096 // how many pending connections queue will hold
-
-#define MAXDATASIZE 1024 // max number of bytes we can get at once
-
-void sigchld_handler(int s)
-{
-    (void)s; // quiet unused variable warning
-
-    // waitpid() might overwrite errno, so we save and restore it:
-    int saved_errno = errno;
-
-    while (waitpid(-1, nullptr, WNOHANG) > 0)
-        ;
-
-    errno = saved_errno;
-}
+#define PORT "2345"      // the port users will be connecting to
+#define BACKLOG 4096     // how many pending connections queue will hold
 
 // get sockaddr, IPv4 or IPv6:
 void * get_in_addr(struct sockaddr * sa)
@@ -52,7 +36,6 @@ int main(void)
     struct addrinfo hints, *servinfo, *p;
     struct sockaddr_storage their_addr; // connector's address information
     socklen_t sin_size;
-    struct sigaction sa;
     int yes = 1;
     char s[INET6_ADDRSTRLEN];
     int rv;
@@ -107,15 +90,6 @@ int main(void)
         exit(1);
     }
 
-    sa.sa_handler = sigchld_handler; // reap all dead processes
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = SA_RESTART;
-    if (sigaction(SIGCHLD, &sa, nullptr) == -1)
-    {
-        perror("sigaction");
-        exit(1);
-    }
-
     printf("server: waiting for connections...\n");
 
     std::shared_ptr<core::IExecutionPool> m_executionPool{core::CreateExecutionPool()};
@@ -127,7 +101,7 @@ int main(void)
                 session->start();
             })};
 
-    while (true) // main accept() loop
+    while (true) // main accept loop
     {
         sin_size = sizeof(their_addr);
         new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
@@ -141,24 +115,6 @@ int main(void)
         // printf("server: got connection from %s\n", s);
 
         m_executionQueue->push(std::make_shared<session>(std::move(new_fd)));
-
-        /*
-        if (!fork())
-        {                  // this is the child process
-            close(sockfd); // child doesn't need the listener
-            // if (send(new_fd, "Hello, world!", 13, 0) == -1)
-            //     perror("send");
-            if ((numbytes = recv(new_fd, buf, MAXDATASIZE - 1, 0)) == -1)
-                perror("recv");
-
-            buf[numbytes] = '\0';
-            printf("server: received '%s'\n", buf);
-
-            close(new_fd);
-            exit(0);
-        }
-        close(new_fd); // parent doesn't need this
-        */
     }
 
     return 0;
