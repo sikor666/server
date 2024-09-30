@@ -3,11 +3,11 @@
 #include <cstdint>
 #include <vector>
 
-class session
+class Session
 {
 public:
-    session(int socket);
-    ~session();
+    Session(int socket);
+    ~Session();
 
     void start();
 

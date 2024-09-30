@@ -9,17 +9,17 @@
 
 constexpr auto MAXBUFFERSIZE = 1024; // max number of bytes we can get at once
 
-session::session(int socket)
+Session::Session(int socket)
     : m_socket{socket}
 {
 }
 
-session::~session()
+Session::~Session()
 {
     close(m_socket);
 }
 
-void session::start()
+void Session::start()
 {
     char buffer[MAXBUFFERSIZE];
 

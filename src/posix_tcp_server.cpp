@@ -92,12 +92,10 @@ int main(int argc, char * argv[])
     }
 
     std::shared_ptr<core::IExecutionPool> m_executionPool{core::CreateExecutionPool()};
-    std::unique_ptr<core::IExecutionQueue<void(std::shared_ptr<session>)>> m_executionQueue{
-        core::CreateConcurrentExecutionQueue<void, std::shared_ptr<session>>(m_executionPool,
+    std::unique_ptr<core::IExecutionQueue<void(std::shared_ptr<Session>)>> m_executionQueue{
+        core::CreateConcurrentExecutionQueue<void, std::shared_ptr<Session>>(m_executionPool,
             // Execution function is called in parallel on the next free thread with the next object from the queue
-            [](const std::atomic_bool & isCanceled, std::shared_ptr<session> && session) {
-                session->start();
-            })};
+            [](const std::atomic_bool & isCanceled, std::shared_ptr<Session> && session) { session->start(); })};
 
     sockaddr_storage their_addr{}; // connector's address information
     char addr_str[INET6_ADDRSTRLEN];
@@ -114,7 +112,7 @@ int main(int argc, char * argv[])
 
         inet_ntop(their_addr.ss_family, get_in_addr((sockaddr *)&their_addr), addr_str, sizeof(addr_str));
 
-        m_executionQueue->push(std::make_shared<session>(std::move(new_fd)));
+        m_executionQueue->push(std::make_shared<Session>(std::move(new_fd)));
     }
 
     return EXIT_SUCCESS;
