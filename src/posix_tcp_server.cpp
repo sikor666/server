@@ -17,7 +17,6 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-constexpr auto PORT = "2345";  // default port users will be connecting to
 constexpr auto BACKLOG = 4096; // how many pending connections queue will hold
 
 // get sockaddr, IPv4 or IPv6:
@@ -31,15 +30,21 @@ void * get_in_addr(sockaddr * sa)
     return &(((sockaddr_in6 *)sa)->sin6_addr);
 }
 
-int main(void)
+int main(int argc, char * argv[])
 {
+    if (argc != 2)
+    {
+        std::cerr << "Usage: " << argv[0] << " <port>\n";
+        return EXIT_FAILURE;
+    }
+
     addrinfo hints{}, *servinfo{nullptr}, *p{nullptr};
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE; // use my IP
 
     int rv;
-    if ((rv = getaddrinfo(nullptr, PORT, &hints, &servinfo)) != 0)
+    if ((rv = getaddrinfo(nullptr, argv[1], &hints, &servinfo)) != 0)
     {
         std::cerr << "getaddrinfo: " << gai_strerror(rv) << "\n";
         std::exit(EXIT_FAILURE);
