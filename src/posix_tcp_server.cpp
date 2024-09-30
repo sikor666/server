@@ -33,14 +33,7 @@ void * get_in_addr(sockaddr * sa)
 
 int main(void)
 {
-    int sockfd, new_fd; // listen on sock_fd, new connection on new_fd
     addrinfo hints{}, *servinfo{nullptr}, *p{nullptr};
-    sockaddr_storage their_addr{}; // connector's address information
-    socklen_t sin_size;
-    int yes{1};
-    char addr_str[INET6_ADDRSTRLEN];
-
-    memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE; // use my IP
@@ -52,6 +45,8 @@ int main(void)
         std::exit(EXIT_FAILURE);
     }
 
+    int sockfd; // listen on sock_fd
+    int yes{1};
     // loop through all the results and bind to the first we can
     for (p = servinfo; p != nullptr; p = p->ai_next)
     {
@@ -99,10 +94,13 @@ int main(void)
                 session->start();
             })};
 
+    sockaddr_storage their_addr{}; // connector's address information
+    char addr_str[INET6_ADDRSTRLEN];
+
     while (true) // main accept loop
     {
-        sin_size = sizeof(their_addr);
-        new_fd = accept(sockfd, (sockaddr *)&their_addr, &sin_size);
+        socklen_t sin_size = sizeof(their_addr);
+        int new_fd = accept(sockfd, (sockaddr *)&their_addr, &sin_size); // new connection on new_fd
         if (new_fd == -1)
         {
             std::perror("accept");
