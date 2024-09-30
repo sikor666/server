@@ -17,8 +17,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#define PORT "2345"      // the port users will be connecting to
-#define BACKLOG 4096     // how many pending connections queue will hold
+constexpr auto PORT = "2345";  // default port users will be connecting to
+constexpr auto BACKLOG = 4096; // how many pending connections queue will hold
 
 // get sockaddr, IPv4 or IPv6:
 void * get_in_addr(sockaddr * sa)

@@ -7,7 +7,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#define MAXBUFFERSIZE 1024 // max number of bytes we can get at once
+constexpr auto MAXBUFFERSIZE = 1024; // max number of bytes we can get at once
 
 session::session(int socket)
     : m_socket{socket}
